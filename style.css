@@ -1,0 +1,968 @@
+/* =================================================================
+   style.css — All styles for Uday Dixit's portfolio
+   This file is linked from index.html using:
+       <link rel="stylesheet" href="style.css" />
+================================================================= */
+
+
+/* -----------------------------------------------------------------
+   1. CSS VARIABLES
+   Define colors, fonts, and sizes in one place.
+   Change a value here → it updates everywhere on the page.
+----------------------------------------------------------------- */
+:root {
+  --white:        #ffffff;
+  --bg:           #fafaf8;       /* warm white background — easier on eyes than pure white */
+  --bg-soft:      #f3f2ef;       /* slightly darker — used for alternating sections */
+  --border:       #e8e6e1;       /* subtle gray borders */
+  --text:         #1a1916;       /* near-black for headings and strong text */
+  --text-mid:     #4a4845;       /* medium gray for body paragraphs */
+  --text-light:   #8a8784;       /* light gray for labels, meta text */
+  --accent:       #2d6a4f;       /* muted forest green — calm, professional */
+  --accent-hover: #245c43;       /* slightly darker green on hover */
+  --accent-light: #f0f7f4;       /* very light green for hover backgrounds */
+
+  --font-serif: 'DM Serif Display', Georgia, serif;   /* headings */
+  --font-sans:  'DM Sans', system-ui, sans-serif;     /* body text */
+
+  /* Content sections have a max width so text doesn't stretch too wide */
+  --content-width: 860px;
+
+  /* Navbar height — used in JS to offset smooth scroll position */
+  --nav-height: 52px;
+}
+
+
+/* -----------------------------------------------------------------
+   2. RESET
+   Remove default browser margins, paddings, and box model quirks.
+----------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  /* scroll-behavior: smooth handles CSS-level smooth scroll */
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-weight: 300;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;  /* crisper text on Mac/iOS */
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+em {
+  font-style: italic;
+}
+
+code {
+  font-family: monospace;
+  font-size: 0.88em;
+  background: #f0f0ee;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+
+/* -----------------------------------------------------------------
+   3. LAYOUT CONTAINERS
+   Two container types:
+   - .container       → centered, max-width, for content sections
+   - .container-fluid → full width edge to edge, just padding on sides
+                        used for navbar and footer so name sits at far left
+----------------------------------------------------------------- */
+
+/* Centered content container — limits width so text stays readable */
+.container {
+  max-width: var(--content-width);
+  margin: 0 auto;           /* auto left/right = centered */
+  padding: 0 2rem;
+}
+
+/* Full-width container — stretches edge to edge, only side padding */
+.container-fluid {
+  width: 100%;
+  padding: 0 2rem;          /* just breathing room from screen edges */
+}
+
+
+/* -----------------------------------------------------------------
+   4. NAVIGATION
+----------------------------------------------------------------- */
+nav {
+  position: sticky;         /* sticks to top of screen when scrolling */
+  top: 0;
+  z-index: 100;             /* sits above all other content */
+  background: rgba(250, 250, 248, 0.93);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);            /* frosted glass effect */
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Nav inner uses container-fluid so name is truly at the far left */
+.nav-inner {
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;  /* name LEFT, links RIGHT */
+}
+
+/* Name/logo on the left */
+.nav-name {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: var(--text);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.nav-name:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* Desktop nav links — plain text on the right */
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.83rem;
+  font-weight: 400;
+  color: var(--text-mid);
+  letter-spacing: 0.03em;
+  transition: color 0.15s;
+}
+.nav-links a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* Hamburger button — 3 lines, hidden on desktop, shows on mobile */
+.nav-hamburger {
+  display: none;            /* hidden by default, shown in media query */
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: var(--text-mid);
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+/* Mobile dropdown menu — hidden until JS adds .is-open */
+.nav-mobile-menu {
+  display: none;
+  flex-direction: column;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0.8rem 2rem 1rem;
+  gap: 0.9rem;
+}
+.nav-mobile-menu.is-open {
+  display: flex;            /* JS toggles this class to show/hide */
+}
+.nav-mobile-menu a {
+  font-size: 0.92rem;
+  color: var(--text-mid);
+  padding: 4px 0;
+}
+.nav-mobile-menu a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+
+/* -----------------------------------------------------------------
+   5. BUTTONS
+----------------------------------------------------------------- */
+.btn-filled,
+.btn-outline {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 400;
+  padding: 0.52rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  border: 1px solid transparent;
+}
+
+/* Filled / primary button */
+.btn-filled {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-filled:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Outline / secondary button */
+.btn-outline {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-mid);
+}
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+  text-decoration: none;
+}
+
+
+/* -----------------------------------------------------------------
+   6. SECTION BASE STYLES
+   All sections use .section for consistent vertical spacing.
+   Alternating sections use .section-alt for a soft gray background.
+----------------------------------------------------------------- */
+.section {
+  padding: 5rem 0;
+}
+
+/* Gray alternating section */
+.section-alt {
+  background: var(--bg-soft);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Heading used in each section */
+.section-heading {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+}
+
+/* Small subtitle under heading */
+.section-sub {
+  font-size: 0.82rem;
+  color: var(--text-light);
+  letter-spacing: 0.03em;
+  margin-bottom: 2.2rem;
+}
+
+
+/* -----------------------------------------------------------------
+   7. INTRO SECTION
+----------------------------------------------------------------- */
+#intro {
+  padding: 5.5rem 0 4.5rem;
+}
+
+.intro-label {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--text-light);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.9rem;
+}
+
+.intro-name {
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.intro-role {
+  font-size: 0.92rem;
+  color: var(--text-light);
+  margin-bottom: 0;
+  letter-spacing: 0.01em;
+}
+
+/* Short horizontal line — visual pause between role and description */
+.intro-divider {
+  width: 36px;
+  height: 1px;
+  background: var(--border);
+  margin: 1.6rem 0;
+}
+
+.intro-text {
+  font-size: 1.05rem;
+  color: var(--text-mid);
+  max-width: 600px;
+  margin-bottom: 2.2rem;
+  line-height: 1.8;
+}
+
+.intro-actions {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+
+/* -----------------------------------------------------------------
+   8. ABOUT SECTION
+----------------------------------------------------------------- */
+.about-body p {
+  font-size: 1rem;
+  color: var(--text-mid);
+  margin-bottom: 1.1rem;
+  max-width: 640px;
+}
+.about-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Pull quote — stands out from normal text */
+.about-pull {
+  border-left: 2px solid var(--accent);
+  padding-left: 1.1rem;
+  margin: 2rem 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--text-mid);
+  max-width: 600px;
+}
+
+
+/* -----------------------------------------------------------------
+   9. SKILLS SECTION
+----------------------------------------------------------------- */
+.skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;                   /* gaps handled by border + padding below */
+}
+
+/* Each skill row: label on left, skills text on right */
+.skill-group {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0.5rem 2rem;
+  align-items: start;
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.skill-group:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.skill-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-top: 0.1rem;
+}
+
+.skill-items {
+  font-size: 0.95rem;
+  color: var(--text-mid);
+  line-height: 1.65;
+}
+
+
+/* -----------------------------------------------------------------
+   10. PROJECTS SECTION
+----------------------------------------------------------------- */
+.projects-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-entry {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.project-entry:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.project-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 0.45rem;
+}
+
+.project-desc {
+  font-size: 0.94rem;
+  color: var(--text-mid);
+  margin-bottom: 1rem;
+  max-width: 620px;
+  line-height: 1.7;
+}
+
+/* Bottom row: tech stack on left, links on right */
+.project-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.project-tech {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  letter-spacing: 0.02em;
+}
+
+.project-links {
+  display: flex;
+  gap: 1rem;
+  margin-left: auto;        /* pushes links to the right side */
+}
+
+.project-links a {
+  font-size: 0.82rem;
+  color: var(--accent);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.project-links a:hover {
+  border-bottom-color: var(--accent);
+  text-decoration: none;
+}
+
+
+/* -----------------------------------------------------------------
+   11. CERTIFICATIONS SECTION
+----------------------------------------------------------------- */
+.cert-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.cert-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.cert-item:first-child {
+  border-top: 1px solid var(--border);
+}
+
+/* Left side: cert name + issuer stacked */
+.cert-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cert-name {
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.cert-issuer {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+/* Right side: badge + link sit together */
+.cert-right {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* Small status pill badge */
+.cert-badge {
+  font-size: 0.72rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.cert-badge.done {
+  background: #edf6f1;
+  color: var(--accent);
+  border: 1px solid #c3e0d3;
+}
+.cert-badge.wip {
+  background: #fef9ec;
+  color: #9a7522;
+  border: 1px solid #f0dfa0;
+}
+
+/* "View Certificate ↗" link */
+.cert-link {
+  font-size: 0.78rem;
+  color: var(--accent);
+  border-bottom: 1px solid transparent;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s;
+}
+.cert-link:hover {
+  border-bottom-color: var(--accent);
+  text-decoration: none;
+}
+
+/* Hidden — used for in-progress certs with no link yet.
+   Remove this class from the <a> once you earn the cert. */
+.cert-link-hidden {
+  display: none;
+}
+
+
+/* -----------------------------------------------------------------
+   12. PROFILES SECTION
+----------------------------------------------------------------- */
+.profiles-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.profile-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--text-mid);
+  padding: 0.48rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.profile-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-light);
+  text-decoration: none;
+}
+.profile-link svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+
+/* -----------------------------------------------------------------
+   13. CONTACT SECTION
+----------------------------------------------------------------- */
+
+/* Two columns: left = info, right = form */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  align-items: start;
+}
+
+.contact-info > p {
+  font-size: 0.95rem;
+  color: var(--text-mid);
+  margin-bottom: 1.6rem;
+  line-height: 1.75;
+}
+
+/* Stack of email/linkedin/github links */
+.contact-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.contact-detail a {
+  font-size: 0.88rem;
+  color: var(--text-mid);
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  transition: color 0.15s;
+}
+.contact-detail a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+.contact-detail svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Contact form layout */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* Each field: label + input stacked */
+.form-field label {
+  display: block;
+  font-size: 0.73rem;
+  font-weight: 500;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 0.4rem;
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  padding: 0.62rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--white);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+  resize: none;
+}
+.form-field input:focus,
+.form-field textarea:focus {
+  border-color: var(--accent);  /* highlight active field */
+}
+
+/* Error text shown by JS when validation fails */
+.form-error {
+  display: none;             /* hidden by default */
+  font-size: 0.75rem;
+  color: #c0392b;
+  margin-top: 0.35rem;
+}
+
+.form-submit {
+  align-self: flex-start;
+}
+
+/* Success message shown by JS after valid submit */
+.form-success {
+  display: none;             /* hidden by default */
+  font-size: 0.88rem;
+  color: var(--accent);
+  padding: 0.5rem 0;
+}
+
+
+/* -----------------------------------------------------------------
+   14. FOOTER
+   Uses container-fluid so it stretches edge to edge like the navbar
+----------------------------------------------------------------- */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 0;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.footer-text {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.footer-back {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  transition: color 0.15s;
+}
+.footer-back:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+
+/* -----------------------------------------------------------------
+   15. CS FUNDAMENTALS SECTION
+   Clean grid of subject cards — minimal, no heavy styling
+----------------------------------------------------------------- */
+
+/* Grid: cards sit in a row on desktop, wrap on smaller screens */
+.cs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+/* Each subject card */
+.cs-card {
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--white);
+  transition: border-color 0.15s, background 0.15s;
+}
+.cs-card:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+/* Subject name — e.g. "Data Structures & Algorithms" */
+.cs-subject {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* Short label under name — e.g. "Core Foundation" */
+.cs-desc {
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+
+/* -----------------------------------------------------------------
+   16. TRAINING SECTION
+   Simple list — each item has title/org on left, date on right
+----------------------------------------------------------------- */
+.training-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.training-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--border);
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.training-item:first-child {
+  border-top: 1px solid var(--border);
+}
+
+/* Left: title + org + description stacked */
+.training-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.training-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.training-org {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.training-desc {
+  font-size: 0.88rem;
+  color: var(--text-mid);
+  margin-top: 4px;
+  max-width: 580px;
+  line-height: 1.65;
+}
+
+/* Date on the right — small and light */
+.training-date {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  white-space: nowrap;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+
+/* -----------------------------------------------------------------
+   17. ACTIVITIES SECTION
+   Simple two-column rows — role on left, org on right
+----------------------------------------------------------------- */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-item {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.activity-item:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.activity-role {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text);
+  min-width: 140px;
+  flex-shrink: 0;
+}
+
+.activity-org {
+  font-size: 0.88rem;
+  color: var(--text-mid);
+}
+
+
+/* -----------------------------------------------------------------
+   18. EDUCATION SECTION
+   Each row: degree + school on left, score + year on right
+----------------------------------------------------------------- */
+.edu-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.edu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--border);
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.edu-item:first-child {
+  border-top: 1px solid var(--border);
+}
+
+/* Left: degree name + school */
+.edu-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.edu-degree {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.edu-school {
+  font-size: 0.82rem;
+  color: var(--text-light);
+}
+
+/* Right: score + year stacked */
+.edu-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.edu-score {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.edu-year {
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+
+/* -----------------------------------------------------------------
+   19. RESPONSIVE — Mobile & small screen styles
+   Everything below 700px wide switches to a single column layout
+----------------------------------------------------------------- */
+@media (max-width: 700px) {
+
+  /* Hide desktop nav links, show hamburger */
+  .nav-links    { display: none; }
+  .nav-hamburger { display: flex; }
+
+  /* Sections get less vertical padding on small screens */
+  .section  { padding: 3.5rem 0; }
+  #intro    { padding: 3.5rem 0 3rem; }
+
+  /* Skills: label stacks above items */
+  .skill-group {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  /* Projects: tech + links stack vertically */
+  .project-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .project-links { margin-left: 0; }
+
+  /* Contact: form goes below info text */
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  /* Cert right side stacks below name on very small screens */
+  .cert-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  /* Training: date moves below the description */
+  .training-item {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Education: score/year move below school name */
+  .edu-item {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .edu-right {
+    align-items: flex-start;
+  }
+
+  /* Activities: role stacks above org */
+  .activity-role {
+    min-width: unset;
+  }
+
+}
